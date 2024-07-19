@@ -1,6 +1,6 @@
 # LM4265 Driver
 
-> 128 X 128 Graphices LCD Module (LM4265) Driver for AT89C51
+> 128x128 Graphices LCD Module (LM4265) Driver for AT89C51
 
 ### 介绍
 
@@ -54,6 +54,18 @@ LM4265 是一个 128*128 的图形液晶显示模块，拥有 20 个引脚，内
 - 19-FS1 : Terminals for selection of font size
 
 - 20-HALT : Halt Function(H = Normal, L = Stop oscillation)
+
+### 图片取模
+
+将位图（128*128）通过取模软件进行取模，取模参数如下：
+
+- 输出数制：十六进制
+- 取模走向：顺向（高位在前）
+- 取模方式：逐行式
+- 数据前缀：`0x`
+- 数据后缀：`,`
+
+![take-up process](https://github.com/A1phaLiu/LM4265-Driver/blob/main/image/take-up%20process.gif)
 
 ### 注意
 
