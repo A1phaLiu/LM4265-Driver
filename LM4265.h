@@ -6,34 +6,8 @@
 #define uint unsigned int
 
 /**********************************************************
-************* {PinNO.}-{Symbol} : {Function} **************
-***********************************************************
-1-Vss : Ground(0V)
-2-Vdd : Logic supply Voltage(+5V)
-3-VO : LC drive Vlotage for contrast adjustment
-4-C/D : Command/Data Selection
-5-RD : Read, Active Low
-6-WR : Write, Active Low
-7~14-DB0~DB7 : Bi-directional data bus line 0~7
-15-CE : Chip enable, Active Low
-16-RESET : Chip enable, Active Low
-17-VEE : Negative voltage input for LC drive 
-		(Negative voltage output for models with on-board negative voltage generator)
-18-MD2 : Mode Selection
-19-FS1 : Terminals for selection of font size
-20-HALT : Halt Function(H = Normal, L = Stop oscillation)
------------------------------------------------------------
-WR = 0, RD = 1, CD = 1 : Command write
-WR = 0, RD = 1, CD = 0 : Data write
-WR = 1, RD = 0, CD = 1 : Status read
-WR = 1, RD = 0, CD = 0 : Data read
-**********************************************************/
-
-/**********************************************************
-        --------------------------------------------
-        ------ {PinNO.}     ----   {Function} ------
-        --------------------------------------------
                {89C51}		----     {LCD4265}
+        --------------------------------------------
                 P0^0		----  		D0
                 P0^1		----		D1
                 P0^2		----		D2
@@ -69,7 +43,7 @@ void lcd_display_string(uchar x, y, uchar code *string, bit FS);
 void lcd_display_point(uchar x, uchar y, uchar pointbit);
 void lcd_display_line(uint x1, uint y1, uint x2, uint y2, uchar linebit);
 void lcd_display_img(unsigned char code *img);
-void lcd_display_s_grid(bit c);
+void lcd_display_grid_s();
 void lcd_init();
 
 
@@ -81,6 +55,7 @@ void delay(uint t)
 {
 	while(t--);
 }
+
 
 /**********************************************************
 function: void select_mode(uchar mode)
@@ -115,6 +90,7 @@ void select_mode(uchar mode)
 	}
 }
 
+
 /**********************************************************
 function: void lcd_writeData(uchar dat)
 feature: Write data to the LCD
@@ -126,6 +102,7 @@ void lcd_write_data(uchar dat){
 	pin_wr = 1;
 	pin_ce = 1;
 }
+
 
 /**********************************************************
 function: void lcd_writeCmd(uchar cmd)
@@ -139,6 +116,7 @@ void lcd_write_cmd(uchar cmd){
 	pin_ce = 1;	
 }
 
+
 /**********************************************************
 function: void lcd_writeCmd1(uchar cmd, uchar dat1)
 feature: Write command to the LCD with one parameter
@@ -148,6 +126,7 @@ void lcd_write_cmd1(uchar cmd, uchar dat1){
 	lcd_write_data(dat1);
 	lcd_write_cmd(cmd);
 }
+
 
 /**********************************************************
 function: void lcd_writeCmd2(uchar cmd, uchar dat1, uchar dat2)
@@ -178,6 +157,7 @@ void lcd_clear_screen(void)
 		lcd_write_cmd1(0xC0, 0x00); // Write data 0x00, address +1
 	}
 }
+
 
 /**********************************************************
 function: void lcd_display_string(uchar x, y, uchar code *string, bit FS)
@@ -228,6 +208,7 @@ void lcd_display_point(uchar x, uchar y, uchar pointbit)
 	else
 		lcd_write_cmd(0xf0 | (7-x%8)); // 0xf0 is the clear dot command
 }
+
 
 /**********************************************************
 function: void lcd_display_line(uint x1, uint y1, uint x2, uint y2, uchar linebit)
@@ -294,6 +275,7 @@ void lcd_display_line(uint x1, uint y1, uint x2, uint y2, uchar linebit)
 	}
 }
 
+
 /**********************************************************
 function: void lcd_display_img(void)
 feature: Display a image(128x128) on full screen
@@ -311,49 +293,17 @@ void lcd_display_img(unsigned char code *img)
 	lcd_write_cmd(0xB2); // Disable automatic data write
 }
 
+
 /**********************************************************
-function: void lcd_display_s_grid(bit c)
+function: void lcd_display_grid_s()
 feature: Display small grid with border
 **********************************************************/
-void lcd_display_s_grid(bit c){
-	unsigned char i,j;
-	unsigned char m,n;
-	fs = 0;
-	
-	if(c){
-		m=0x55;n=0xaa;
-	}
-    else{
-		m=0xaa;n=0x55;
-	}
-	
-	lcd_write_cmd(0x98);
-	lcd_write_cmd2(0x24, 0x00, 0x00);
-	lcd_write_cmd(0xB0);	// Enable automatic data write
-	for(i=0;i<64;i++){
-		for(j=0;j<16;j++)
-			lcd_write_data(m);
-		for(j=0;j<16;j++)
-			lcd_write_data(n);
-	}
-	lcd_write_cmd(0xB2); // Disable automatic data write
-	
-	// Left border
-	lcd_display_line(0,0,0,127,1);
-	lcd_display_line(1,0,1,126,0);
-	lcd_display_line(2,0,2,125,0);
-	// Right border
-	lcd_display_line(127,0,127,127,1);
-	lcd_display_line(126,0,126,126,0);
-	lcd_display_line(125,0,125,125,0);
-	// Top border
-	lcd_display_line(0,0,127,0,1);
-	lcd_display_line(1,1,126,1,0);
-	lcd_display_line(1,2,126,2,0);
-	// Bottom border
-	lcd_display_line(0,127,127,127,1);
-	lcd_display_line(1,126,126,126,0);
-	lcd_display_line(1,125,126,125,0);
+void lcd_display_grid_s(){
+    lcd_display_img(grid_s);
+}
+
+void lcd_welcome(){
+    lcd_display_img(welcome);
 }
 
 /**********************************************************
@@ -373,7 +323,6 @@ void lcd_init(void){
 	lcd_write_cmd2(0x43, 16, 0x00); // Set the width of the graph area
 	lcd_write_cmd2(0x22, 0x1c, 0x00); // Set the offset CGRAM address
 	lcd_write_cmd(0x80); // Set display mode is OR
-	
 }
 
 
