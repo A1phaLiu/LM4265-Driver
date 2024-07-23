@@ -66,6 +66,8 @@ LM4265 是一个 128*128 的图形液晶显示模块，拥有 20 个引脚，内
 
 - 已在 Proteus 8 中仿真测试，采用的单片机为 AT89C51
 
+![circuit diagram](https://github.com/A1phaLiu/LM4265-Driver/blob/main/image/circuit%20diagram.png)
+
 ### 参考
 
 - [T6963C 控制器系列液晶模块使用说明书 ](https://www.manuallib.com/download/T6963C-CONTROLLER-SERIES-LIQUID-CRYSTAL-MODULE-CHINESE-MANUAL.PDF)
